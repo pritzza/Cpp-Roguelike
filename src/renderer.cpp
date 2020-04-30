@@ -1,7 +1,4 @@
 #include "renderer.h"
-#include <stdio.h>
-
-char visibleMap[consoleHeight][consoleWidth];
 
 bool inside(Room room, Player p)
 {
@@ -10,7 +7,7 @@ bool inside(Room room, Player p)
 	return false;
 }
 
-void getPlayerVision(char masterMap[][consoleWidth], Player* p, Room* r_list)
+void getPlayerVision(char masterMap[][consoleWidth], Player* p, std::vector<Room> r_list)
 {
 	for (int i = 0; i < consoleHeight; i++)
 		for (int j = 0; j < consoleWidth; j++)
@@ -21,25 +18,29 @@ void getPlayerVision(char masterMap[][consoleWidth], Player* p, Room* r_list)
 		for (int j = p->x - 1; j < p->x + 2; j++)
 			visibleMap[i][j] = masterMap[i][j];
 
-	for (int i = 0; i < 10; i++)												// Goes through floor's room list to see if player x,y are inside any room,
-		if (inside(r_list[i], *p))												// if player is inside, reveal and draw entire room.
-			for (int x = r_list[i].x; x < r_list[i].x + r_list[i].width; x++)
-				for (int y = r_list[i].y; y < r_list[i].y + r_list[i].height; y++)
+	for (auto &r: r_list)												// Goes through floor's room list to see if player x,y are inside any room,
+		if (inside(r, *p))												// if player is inside, reveal and draw entire room.
+			for (int x = r.x; x < r.x + r.width; x++)
+				for (int y = r.y; y < r.y + r.height; y++)
 					visibleMap[y][x] = masterMap[y][x];
 }
 
-void drawRoom(char masterMap[][consoleWidth], Player* p, Room* r_list, int toggle)     // Can be [][x] or [y][x], not [][] or [y][]
+void drawRoom(char masterMap[][consoleWidth], Player* p, std::vector<Room> r_list, std::vector<Enemy> e_list)     // Can be [][x] or [y][x], not [][] or [y][]
 {
+	masterMap[p->y][p->x] = p->symbol;
+
+	for (auto &e : e_list)
+	{
+		masterMap[e.y][e.x] = e.symbol;
+	}
+
 	getPlayerVision(masterMap, p, r_list);
 
 	std::string mapString;
 
 	for (int i = 0; i < consoleHeight; i++)
 		for (int j = 0; j < consoleWidth; j++)
-			if (toggle)
-				mapString += visibleMap[i][j];		// player vison
-			else
-				mapString += masterMap[i][j];			// god vision
+			mapString += visibleMap[i][j];// put masterMap or visibleMap		// player vison
 
 	std::cout << mapString << std::endl;
 }

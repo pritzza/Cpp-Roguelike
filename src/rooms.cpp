@@ -1,10 +1,10 @@
 #include "rooms.h"
 
-void pathDown(char map[][consoleWidth], Room* r_list, int r1, int r2, char symbol, int centerX1, int centerY1, int centerX2, int centerY2)
+void pathDown(char map[][consoleWidth], std::vector<Room> r_list, int r1, int r2, char symbol, int centerX1, int centerY1, int centerX2, int centerY2)
 {
-	symbol = 'D';
-	if (centerX1 > r_list[r2].x + 1 && centerX1 < r_list[r2].x + r_list[r2].width - 1)			// checks if parallel to room 2
-		for (int pathStart = r_list[r1].y + r_list[r1].height - 1; pathStart <= r_list[r2].y; pathStart++)
+	//symbol = 'D';
+	if (centerX1 > r_list[r2].x && centerX1 < r_list[r2].x + r_list[r2].width)			// checks if parallel to room 2
+		for (int pathStart = r_list[r1].y + r_list[r1].height - 1; pathStart - 2 <= r_list[r2].y; pathStart++)
 			drawPath(map, symbol, pathStart, centerX1);
 	else																				// Draws a vertical line from top to bottom
 		for (int pathStart = r_list[r1].y + r_list[r1].height - 1; pathStart <= centerY2; pathStart++)
@@ -17,14 +17,14 @@ void pathDown(char map[][consoleWidth], Room* r_list, int r1, int r2, char symbo
 			drawPath(map, symbol, centerY2, h);
 }
 
-void pathUp(char map[][consoleWidth], Room* r_list, int r1, int r2, char symbol, int centerX1, int centerY1, int centerX2, int centerY2)
+void pathUp(char map[][consoleWidth], std::vector<Room> r_list, int r1, int r2, char symbol, int centerX1, int centerY1, int centerX2, int centerY2)
 {
-	symbol = 'U';
-	if (centerX1 > r_list[r2].x + 1 && centerX1 < r_list[r2].x + r_list[r2].width - 1)				// checks if parallel to room 2
-		for (int pathStart = r_list[r1].y; pathStart + 1 >= r_list[r2].y + r_list[r2].height; pathStart--)
+	//symbol = 'U';
+	if (centerX1 > r_list[r2].x && centerX1 < r_list[r2].x + r_list[r2].width)				// checks if parallel to room 2
+		for (int pathStart = r_list[r1].y; pathStart + 2 >= r_list[r2].y + r_list[r2].height; pathStart--)
 			drawPath(map, symbol, pathStart, centerX1);
 	else																				
-		for (int pathStart = r_list[r1].y; pathStart - 1 >= centerY2; pathStart--)			// Draws a vertical line from bottom to top
+		for (int pathStart = r_list[r1].y; pathStart >= centerY2; pathStart--)			// Draws a vertical line from bottom to top
 			drawPath(map, symbol, pathStart, centerX1);
 
 	if (centerX1 > centerX2)
@@ -35,11 +35,11 @@ void pathUp(char map[][consoleWidth], Room* r_list, int r1, int r2, char symbol,
 			drawPath(map, symbol, centerY2, h);
 }
 
-void pathLeft(char map[][consoleWidth], Room* r_list, int r1, int r2, char symbol, int centerX1, int centerY1, int centerX2, int centerY2)
+void pathLeft(char map[][consoleWidth], std::vector<Room> r_list, int r1, int r2, char symbol, int centerX1, int centerY1, int centerX2, int centerY2)
 {
-	symbol = 'L';
-	if (centerY1 > r_list[r2].y + 1 && centerY1 < r_list[r2].y + r_list[r2].height - 1)			// checks if parallel to room 2
-		for (int pathStart = r_list[r1].x; pathStart + 1 >= r_list[r2].x + r_list[r2].width; pathStart--)
+	//symbol = 'L';
+	if (centerY1 > r_list[r2].y && centerY1 < r_list[r2].y + r_list[r2].height)			// checks if parallel to room 2
+		for (int pathStart = r_list[r1].x; pathStart + 2 >= r_list[r2].x + r_list[r2].width; pathStart--)
 			drawPath(map, symbol, centerY1, pathStart);
 	else
 		for (int pathStart = r_list[r1].x; pathStart > centerX2; pathStart--)			// Draws a horizontal line from right to left
@@ -52,11 +52,11 @@ void pathLeft(char map[][consoleWidth], Room* r_list, int r1, int r2, char symbo
 			drawPath(map, symbol, v, centerX2);
 }
 
-void pathRight(char map[][consoleWidth], Room* r_list, int r1, int r2, char symbol, int centerX1, int centerY1, int centerX2, int centerY2)
+void pathRight(char map[][consoleWidth], std::vector<Room> r_list, int r1, int r2, char symbol, int centerX1, int centerY1, int centerX2, int centerY2)
 {
-	symbol = 'R';
-	if (centerY1 > r_list[r2].y - 1 && centerY1 < r_list[r2].y + r_list[r2].height + 1)			// checks if parallel to room 2
-		for (int pathStart = r_list[r1].x + r_list[r1].width - 1; pathStart - 1 <= r_list[r2].x; pathStart++)
+	//symbol = 'R';
+	if (centerY1 > r_list[r2].y && centerY1 < r_list[r2].y + r_list[r2].height)			// checks if parallel to room 2
+		for (int pathStart = r_list[r1].x + r_list[r1].width - 1; pathStart - 3 <= r_list[r2].x; pathStart++)
 			drawPath(map, symbol, centerY1, pathStart);
 	else
 		for (int pathStart = r_list[r1].x + r_list[r1].width - 1; pathStart < centerX2; pathStart++)	// Draws a horizontal line from right to left
@@ -79,7 +79,7 @@ void drawPath(char map[][consoleWidth], char symbol, int y, int x)
 		map[y][x] = map[y][x];
 }
 
-void setPath(char map[][consoleWidth], Room* r_list, int r1, int r2) // r1 is starting room, the one giving the path
+void setPath(char map[][consoleWidth], std::vector<Room> r_list, int r1, int r2) // r1 is starting room, the one giving the path
 {
 	int centerX1 = r_list[r1].x + (r_list[r1].width / 2);
 	int centerY1 = r_list[r1].y + (r_list[r1].height / 2);
@@ -90,28 +90,32 @@ void setPath(char map[][consoleWidth], Room* r_list, int r1, int r2) // r1 is st
 
 	//std::cerr << "Room: " << r_list[r1].id << " and " << r_list[r2].id << " match. \n";
 
-	if (centerY1 < centerY2 && centerY2 - centerY1 > r_list[r1].width / 2)					// Path down (North to South)
+	if (centerY1 < centerY2 && centerY2 - centerY1 > r_list[r1].width / 2)										// Path down (North to South)
 	{
 		pathDown(map, r_list, r1, r2, direction, centerX1, centerY1, centerX2, centerY2);
 	}
-	else if (centerY1 > centerY2 && centerY1 - centerY2 > r_list[r1].width / 2)				// Path up (South to North)
+	else if (centerY1 > centerY2 && centerY1 - centerY2 > r_list[r1].width / 2)									// Path up (South to North)
 	{
 		pathUp(map, r_list, r1, r2, direction, centerX1, centerY1, centerX2, centerY2);
 	}
-	else if (centerX1 > centerX2 && (centerX1 != r_list[r2].y || centerX1 != r_list[r2].y + r_list[r2].height))											// Path left (East to West)
+	else if (centerX1 > centerX2 && (centerX1 != r_list[r2].y || centerX1 != r_list[r2].y + r_list[r2].height))	// Path left (East to West)
 	{
 		pathLeft(map, r_list, r1, r2, direction, centerX1, centerY1, centerX2, centerY2);
 	}
-	else if (centerX1 < centerX2 && (centerX1 != r_list[r2].y || centerX1 != r_list[r2].y + r_list[r2].height))															// Path right (West to East)
+	else if (centerX1 < centerX2 && (centerX1 != r_list[r2].y || centerX1 != r_list[r2].y + r_list[r2].height))	// Path right (West to East)
 	{
 		pathRight(map, r_list, r1, r2, direction, centerX1, centerY1, centerX2, centerY2);
 	}	
-	std::cerr << "pathfinding error\n";
+	else        // all the previous conditionals should be met, however if they aren't met, there is this backup
+	{
+		pathDown(map, r_list, r1, r2, direction, centerX1, centerY1, centerX2, centerY2);
+	}
+	//std::cerr << "pathfinding error\n";
 	//map[r_list[r1].y][r_list[r1].x + r_list[r1].width - 1] = r2 + '0';		// Debug info to show what rooms pair
 	//map[r_list[r2].y][r_list[r2].x + r_list[r2].width - 1] = r1 + '0';
 }
 
-void findPaths(char map[][consoleWidth], Room* r_list, int numRooms)
+void findPaths(char map[][consoleWidth], std::vector<Room> r_list, int numRooms)
 {
 	int distance{};
 	int r1;
@@ -144,15 +148,19 @@ int distanceSquared(int p1_x, int p1_y, int p2_x, int p2_y)
 	return ((p1_x - p2_x) * (p1_x - p2_x)) + ((p1_y - p2_y) * (p1_y - p2_y));
 }
 
-void fillRoom(char map[][consoleWidth], Room r)
+void fillRoom(char map[][consoleWidth], Room r, std::vector<Room> r_list)
 {
-	map[rand() % (r.height - 2) + (r.y + 1)][rand() % (r.width - 2) + (r.x + 1)] = '$';
+	if (r.id == 1)
+		map[rand() % (r.height - 2) + (r.y + 1)][rand() % (r.width - 2) + (r.x + 1)] = 'A';
+	if (r.id == 2)
+		map[rand() % (r.height - 2) + (r.y + 1)][rand() % (r.width - 2) + (r.x + 1)] = '^';
+
 }
 
 // Prevents room overlap/clipping on generation
-bool checkRoom(char map[][consoleWidth], int roomsMade, Room r, Room* r_list)
+bool checkRoom(char map[][consoleWidth], int roomsMade, Room r, std::vector<Room> r_list)
  {
-	for (int i = 0; i <= roomsMade; i++)
+	for (int i = 0; i < roomsMade; i++)
 	{
 		if ((r.x > r_list[i].x && r.x < r_list[i].x + r_list[i].width) ||
 			(r.x + r.width > r_list[i].x && r.x + r.width < r_list[i].x + r_list[i].width) ||
@@ -198,7 +206,7 @@ void clearCanvas(char map[consoleHeight][consoleWidth])
 			map[y][x] = ' ';
 }
 
-void generateRoom(char map[][consoleWidth], Room r)
+void generateRoom(char map[][consoleWidth], Room r, std::vector<Room> r_list)
 {
 	for (int y = r.y; y < r.height + r.y; y++)            // Goes through map[][] and draws a box of # at r.y r.x for r.height x r.width
 		for (int x = r.x; x < r.width + r.x; x++)
@@ -209,13 +217,13 @@ void generateRoom(char map[][consoleWidth], Room r)
 			map[y - 1][x - 1] = '.';
 
 	//map[r.y][r.x] = r.id + '0';						  // + 48 because the value of 48 in the decimal to ASCII chart is 0 so 49 is 1 and so on
-	//fillRoom(map, r);
+	fillRoom(map, r, r_list);
 }
 
-void generateFloor(char map[][consoleWidth], Player* p, Room* r_list)
+std::vector<Room> generateFloor(char map[][consoleWidth], Player* p)
 {
 	int numRooms{ rand() % 5 + 5 };
-	int roomsMade{};
+	std::vector<Room> r_list;
 
 	for (int i = 0; i < numRooms; i++)
 	{
@@ -227,13 +235,32 @@ void generateFloor(char map[][consoleWidth], Player* p, Room* r_list)
 			r.height = makeRoomHeight();
 			r.x = makeRoomOffsetX(r.width);
 			r.y = makeRoomOffsetY(r.height);
-		} while (!checkRoom(map, roomsMade, r, r_list));
-		generateRoom(map, r);
-		roomsMade++;
-		r_list[i] = r;
+		} while (!checkRoom(map, i, r, r_list));
+		generateRoom(map, r, r_list);
+		r_list.push_back(r);
 	}
 	findPaths(map, r_list, numRooms);
 
 	p->x = r_list[0].x + r_list[0].width / 2;          // spawn in middle of room in [0]
 	p->y = r_list[0].y + r_list[0].height / 2;
+
+	return r_list;
+}
+
+std::vector<Enemy> spawnEnemies(std::vector<Room> r_list)
+{
+	int numEnemies;
+	std::vector<Enemy> e_list;
+	Enemy e;
+	for (auto &r : r_list)
+	{
+		numEnemies = rand() % 3;
+		for (int i = 0; i < numEnemies; i++)
+		{
+			e.x = rand() % (r.width - 2) + (r.x + 1);
+			e.y = rand() % (r.height - 2) + (r.y + 1);
+			e_list.push_back(e);
+		}
+	}
+	return e_list;
 }
