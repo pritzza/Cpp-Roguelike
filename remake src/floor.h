@@ -21,7 +21,7 @@ public:
 public:
 	void addRoom();
 	void pathRooms();
-	void drawPath();
+	void drawPath(char d, int x, int y);
 
 public:
 	Floor();

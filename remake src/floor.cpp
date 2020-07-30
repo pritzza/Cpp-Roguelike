@@ -20,6 +20,7 @@ void Floor::createFloor()
 	for (int i = 0; i < roomsInFloor; i++)
 		addRoom();
 
+	// garbage debug
 	for (int i = 0; i < MAP_HEIGHT + 1; i++)
 		std::cout << std::endl;
 	std::cout << numRooms << roomsInFloor;
@@ -29,19 +30,48 @@ void Floor::createFloor()
 
 void Floor::pathRooms()
 {
-	short cxs, cxe, cys, cye;	// center x/y of starting and ending rooms
-	std::vector<Room>& r = rooms;
+	short cxr1, cxr2, cyr1, cyr2;	// (center x of r1) center x/y of starting and ending rooms, r1 and r2
 
 	for (int i = 0; i < rooms.size() - 1; i++)
 	{
+		Room& r1 = rooms[i];		// the room we're starting the path
+		Room& r2 = rooms[i + 1];	// the destination room of the path
 
+		cxr1 = r1.x + r1.width / 2;
+		cyr1 = r1.y + r1.height / 2;
+
+		cxr2 = r2.x + r2.width / 2;
+		cyr2 = r2.y + r2.height / 2;
+
+		int path = cxr1;	// sets the path to the x center of r1
+
+		// Go through and draw the horizontal part of the path first
+		if (cxr1 <= cxr2)
+			for (; path < cxr2; path++)
+				drawPath('r', path, cyr1);
+		else if (cxr1 > cxr2)
+			for (path; path > cxr2; path--)
+				drawPath('l', path, cyr1);
+
+		path = cyr1;	// switch the path to the y center of r2
+
+		// So that next the horizontal part of the path can be built
+		if (cyr1 <= cyr2)
+			for (; path < cyr2; path++)
+				drawPath('d', cxr2, path);
+		else if (cyr1 > cyr2)
+			for (path; path > cyr2; path--)
+				drawPath('u', cxr2, path);
 
 	}
 }
 
-void Floor::drawPath( )
+void Floor::drawPath(char d, int x, int y)
 {
-
+	if (map[y][x] == '#')
+		map[y][x] = '<';
+	else if (map[y][x] == ' ')
+		map[y][x] = '.';
 }
 
 void Floor::addRoom()

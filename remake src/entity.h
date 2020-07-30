@@ -45,6 +45,8 @@ private:
 private:
 	void getInput();
 public:
+	char vision[MAP_HEIGHT][MAP_WIDTH];
+public:
 	void tick();
 	Player();
 };
