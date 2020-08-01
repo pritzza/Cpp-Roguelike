@@ -7,20 +7,23 @@
 class Game
 {
 private:
-    bool running;
-    Screen screen;
-    Floor floor;
-    Player player;
+	bool running;
+	Screen screen;
+	Floor floor;
 
-    std::vector<Entity> entities;
+	std::vector<Entity*> entities;
+
+	Player player { entities };
 
 private:
-    void tick();
+	void tick();
+	void progressFloor();
+	void reset();
 
 public:
-    void start();
+	void start();
 
 public:
-    Game();
-    
+	Game();
+
 };

@@ -2,8 +2,16 @@
 
 Floor::Floor()
 {
-	fillFloor(' ');
-	createFloor();
+}
+
+std::vector<Room>& Floor::getRooms()
+{
+	return rooms;
+}
+
+Room& Floor::getRoom(int id)
+{
+	return rooms[id];
 }
 
 void Floor::fillFloor(char c)
@@ -15,17 +23,21 @@ void Floor::fillFloor(char c)
 
 void Floor::createFloor()
 {
+	fillFloor(' ');
+	rooms.clear();
 	numRooms = 0;
-	short roomsInFloor = rand() % (minRoomsPerFloor) + maxRoomsPerFloor - minRoomsPerFloor;
+
+	short roomsInFloor = rand() % (maxRoomsPerFloor - minRoomsPerFloor + 1) + minRoomsPerFloor;
 	for (int i = 0; i < roomsInFloor; i++)
 		addRoom();
 
-	// garbage debug
-	for (int i = 0; i < MAP_HEIGHT + 1; i++)
-		std::cout << std::endl;
-	std::cout << numRooms << roomsInFloor;
+	// garbage debug for how many rooms tried and actual room count
+	//for (int i = 0; i < MAP_HEIGHT + 1; i++)
+	//	std::cout << std::endl;
+	//std::cout << numRooms << roomsInFloor;
 
 	pathRooms();
+
 }
 
 void Floor::pathRooms()
@@ -62,16 +74,17 @@ void Floor::pathRooms()
 		else if (cyr1 > cyr2)
 			for (path; path > cyr2; path--)
 				drawPath('u', cxr2, path);
-
 	}
 }
 
 void Floor::drawPath(char d, int x, int y)
 {
-	if (map[y][x] == '#')
-		map[y][x] = '<';
+	// Actually draws the tiles to the map depending on the x/y of the path
+
+	if (map[y][x] == rooms[0].wallTile)
+		map[y][x] = rooms[0].doorTile;
 	else if (map[y][x] == ' ')
-		map[y][x] = '.';
+		map[y][x] = rooms[0].pathTile;
 }
 
 void Floor::addRoom()

@@ -11,13 +11,15 @@ public:
 	short width;
 	short height;
 	short id = 0;
-	char wallTile = '#';
-	//char wallTile2;
-	char floorTile = '.';
+	const char wallTile = '#';
+	//const char wallTile2;
+	const char floorTile = '.';
+	const char doorTile = '>';
+	const char pathTile = ':';
 
 public:
 	void generateRoomShape();
-	bool isRoomOverlapping(std::vector<Room> r);
+	bool isRoomOverlapping(const std::vector<Room> r);
 
 public:
 	Room(std::vector<Room> rooms, int n);

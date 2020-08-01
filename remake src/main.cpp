@@ -1,5 +1,6 @@
 // Dungeon Game 2.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
+// Dungeon Game 1 Remake, based off of the game Rogue
 
 #include "game.h"
 

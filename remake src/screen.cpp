@@ -13,18 +13,24 @@ Screen::Screen()
 {
 }
 
-void Screen::update(const Player& p, const Floor& f, const std::vector<Entity> &e)
+void Screen::update(const Player& p, const Floor& f, const std::vector<Entity*>& e)
 {
 	char screen[MAP_HEIGHT][MAP_WIDTH];
 
 	for (int y = 0; y < MAP_HEIGHT; y++)	// Copy all elements from the floor's map to the screen
 		for (int x = 0; x < MAP_WIDTH; x++)
-			screen[y][x] = f.map[y][x];
+			if (p.getSight() != -1)
+			{
+				screen[y][x] = p.vision[y][x];
+			}
+			else
+				screen[y][x] = f.map[y][x];
 
-	//for (int i = 0; i < e.size(); i++)		// Draw all entities into the screen
-	//	screen[e[i].y][e[i].x] = e[i].sprite;
-
-	screen[p.y][p.x] = p.sprite;			// Draw the player onto the screen
+	for (auto& i : e)		// Draw all entities into the screen
+	{
+		std::cout << "\ne.y" << i->y << "\ne.x" << i->x << "\ne.s" << i->sprite;
+		screen[i->y][i->x] = i->sprite;
+	}
 
 	draw(screen);		// After rasterizing game's elements, draw()'s it to print it
 }

@@ -31,7 +31,7 @@ void Room::generateRoomShape()
 	y = rand() % (MAP_HEIGHT - height);
 }
 
-bool Room::isRoomOverlapping(std::vector<Room> r)
+bool Room::isRoomOverlapping(const std::vector<Room> r)
 {
 	for (int i = 0; i < r.size(); i++)	// goes through every existing room on the floor to check if any corners are inside
 	{	
