@@ -21,7 +21,7 @@ void Floor::fillFloor(char c)
 			map[y][x] = c;
 }
 
-void Floor::createFloor()
+void Floor::createFloor(std::vector<Entity*>& e, std::vector<Creature*>& c)
 {
 	fillFloor(' ');
 	rooms.clear();
@@ -38,6 +38,37 @@ void Floor::createFloor()
 
 	pathRooms();
 
+	spawnRoomContents(e, c);
+}
+
+void Floor::spawnRoomContents(std::vector<Entity*>& e, std::vector<Creature*>& c)
+{
+	// goes through each room to see enemy composition of each one
+	for (auto& r : rooms)
+	{
+		short minEnemies = 0;
+		short maxEnemies = 2;
+		short enemiesInRoom = rand() % (maxEnemies - minEnemies) + minEnemies;
+
+		// Turn into function
+		short chanceOfSwarm = 5;
+		short isSwarm = rand() % chanceOfSwarm + 1;
+		short swarmFactor = 3;
+
+		if (isSwarm == chanceOfSwarm)
+			enemiesInRoom *= swarmFactor;
+		//
+
+		// Spawns enemies
+		for (int i = 0; i < enemiesInRoom; i++)
+		{
+
+			int xp = rand() % (r.width - 2) + r.x + 1;
+			int yp = rand() % (r.height - 2) + r.y + 1;
+
+			Enemy* enemy = new Enemy(e, c, xp, yp, 0);
+		}
+	}
 }
 
 void Floor::pathRooms()
@@ -92,7 +123,7 @@ void Floor::addRoom()
 	Room room(rooms, numRooms);		// Creates a room object which takes in the vector for the other rooms of the floor
 
 	bool isNotValid = room.isRoomOverlapping(rooms);
-	
+
 	if (isNotValid == false)
 	{
 		rooms.push_back(room);	// Adds this room to the vector of rooms

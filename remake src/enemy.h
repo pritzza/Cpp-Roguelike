@@ -9,11 +9,11 @@ private:
 	short ai;
 
 private:
-	void calculateNextMove(Floor& f, std::vector<Entity*>& e);
+	void calculateNextMove(std::vector<Entity*>& e); // will need to take in parameters for surroundings eventually
 	void setEnemy();
 
 public:
-	void tick(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c);
+	void tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r);
 	Enemy(std::vector<Entity*>& e, std::vector<Creature*>& c, int xp, int yp, int i);
 	~Enemy();
 };

@@ -6,7 +6,7 @@ Creature::Creature()
 	name = "Mambo";
 }
 
-void Creature::tick(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c)
+void Creature::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r)
 {
 
 }
@@ -36,7 +36,7 @@ short Creature::getSight() const
 	return sight;
 }
 
-void Creature::move(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c)
+void Creature::move(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const Room& r)
 {
 	updateDirection();
 
@@ -47,7 +47,7 @@ void Creature::move(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c
 	{
 		fight(c[mobNum]);
 	}
-	else if (checkForTileCollision(f) == false)
+	else if (checkForTileCollision(m, r) == false)
 	{
 		x += xVel;
 		y += yVel;
@@ -74,7 +74,7 @@ void Creature::fight(Creature* c)
 void Creature::updateDirection()
 {
 	if (xVel || yVel)	// if your velocity isnt 0, change direction
-	{
+	{	
 		if (yVel < 0)
 			direction = 0; 	// North
 		else if (yVel > 0)
@@ -86,12 +86,12 @@ void Creature::updateDirection()
 	}
 }
 
-bool Creature::checkForTileCollision(Floor& f)
+bool Creature::checkForTileCollision(const char m[MAP_HEIGHT][MAP_WIDTH], const Room& r)
 {
 	// checks the tile you're going to move to
-	char next = f.map[y + yVel][x + xVel];
+	char next = m[y + yVel][x + xVel];
 
-	if (next == f.getRoom(0).wallTile || next == ' ')
+	if (next == r.wallTile || next == ' ')
 		return true;
 
 	return false;

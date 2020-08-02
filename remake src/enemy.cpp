@@ -29,7 +29,7 @@ void Enemy::setEnemy()
 	}
 }
 
-void Enemy::calculateNextMove(Floor& f, std::vector<Entity*>& e)
+void Enemy::calculateNextMove(std::vector<Entity*>& e) // will need to take in parameters for surroundings eventually
 {
 	short move;
 
@@ -51,8 +51,8 @@ void Enemy::calculateNextMove(Floor& f, std::vector<Entity*>& e)
 	}
 }
 
-void Enemy::tick(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c)
+void Enemy::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r)
 {
-	calculateNextMove(f, e);
-	move(f, e, c);
+	calculateNextMove(e);
+	move(e, c, m, r[0]);
 }

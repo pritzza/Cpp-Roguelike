@@ -19,6 +19,7 @@ private:
 private:
 	void tick();
 	void progressFloor();
+	void clearEntities(bool savePlayer);
 	void reset();
 
 public:

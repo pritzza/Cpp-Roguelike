@@ -19,12 +19,12 @@ protected:
 protected:
 	void updateDirection();
 	void fight(Creature* c);
-	void move(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c);
-	bool checkForTileCollision(Floor& f);
+	void move(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const Room& r);
+	bool checkForTileCollision(const char m[MAP_HEIGHT][MAP_WIDTH], const Room& r);
 	int checkForCreatureCollision(std::vector<Creature*>& c);
 
 public:
-	void virtual tick(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c);
+	void virtual tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r);
 
 	short getSight() const;
 	short getHealth() const;

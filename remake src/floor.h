@@ -1,7 +1,7 @@
 #pragma once
 
 #include "constants.h"
-#include "room.h"
+#include "enemy.h"
 
 class Floor
 {
@@ -15,6 +15,7 @@ private:
 	void addRoom();
 	void pathRooms();
 	void drawPath(char d, int x, int y);
+	void spawnRoomContents(std::vector<Entity*>& e, std::vector<Creature*>& c);
 	
 public:
 	short level;
@@ -23,7 +24,7 @@ public:
 	short numRooms;
 
 public:
-	void createFloor();
+	void createFloor(std::vector<Entity*>& e, std::vector<Creature*>& c);
 	std::vector<Room>& getRooms();
 	Room& getRoom(int id);
 
