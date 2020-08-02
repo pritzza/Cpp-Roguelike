@@ -13,6 +13,15 @@ Screen::Screen()
 {
 }
 
+void Screen::printStats(const Player& p)
+{
+	char d;
+	// Change direction to compas direction (N/S/E/W)
+	switch (p.getDirection()) { case (0): d = 'N'; break;  case (1): d = 'S'; break; case (2): d = 'E'; break;  case (3): d = 'W'; break; }
+
+	std::cout << p.getName() << " [ HP (" << p.getHealth() << '/' << p.getMaxHealth() << ") ATK (" << p.getAttack() << ") DEF (" << p.getDefense() << ") " << d << " ]";
+}
+
 void Screen::update(const Player& p, const Floor& f, const std::vector<Entity*>& e)
 {
 	char screen[MAP_HEIGHT][MAP_WIDTH];
@@ -26,13 +35,16 @@ void Screen::update(const Player& p, const Floor& f, const std::vector<Entity*>&
 			else
 				screen[y][x] = f.map[y][x];
 
-	for (auto& i : e)		// Draw all entities into the screen
+	for (auto& i : e)		// Draw all entities into the screen if within vision
 	{
-		std::cout << "\ne.y" << i->y << "\ne.x" << i->x << "\ne.s" << i->sprite;
-		screen[i->y][i->x] = i->sprite;
+		std::cout << "\n\nX: " << i->x << "\nY: " << i->y << "\nS: " << i->sprite;
+
+		if (p.vision[i->y][i->x] != ' ' || p.getSight() == -1)
+			screen[i->y][i->x] = i->sprite;
 	}
 
 	draw(screen);		// After rasterizing game's elements, draw()'s it to print it
+	printStats(p);
 }
 
 void Screen::draw(const char s[MAP_HEIGHT][MAP_WIDTH])

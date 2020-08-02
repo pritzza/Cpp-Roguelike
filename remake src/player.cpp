@@ -1,12 +1,13 @@
 #include "player.h"
 
-Player::Player(std::vector<Entity*>& e)
+Player::Player(std::vector<Entity*>& e, std::vector<Creature*>& c)
 {
 	name = "You";
 	sprite = '&';
 	id = 0;
 
 	e.push_back(this);
+	c.push_back(this);
 }
 
 void Player::resetPlayer()
@@ -99,12 +100,20 @@ void Player::updateVision(const std::vector<Room>& f, const char m[MAP_HEIGHT][M
 		}
 }
 
-int Player::tick(Floor& f, std::vector<Entity*>& e)
+int Player::tick(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c, bool debug)
 {
 	// returns input inorder to change gamestates in game obj
 	int input = getInput();
-	move(f, e);
+	move(f, e, c);
 	updateVision(f.getRooms(), f.map);
 
 	return input;
+}
+
+void Player::tick(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c)
+{
+	// returns input inorder to change gamestates in game obj
+	getInput();
+	move(f, e, c);
+	updateVision(f.getRooms(), f.map);
 }

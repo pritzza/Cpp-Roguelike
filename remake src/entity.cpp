@@ -1,6 +1,7 @@
 #include "entity.h"
 #include <iostream>
 
-void Entity::tick()
+std::string Entity::getName() const
 {
+	return name;
 }

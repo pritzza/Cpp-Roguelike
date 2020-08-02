@@ -14,9 +14,10 @@ public:
 	char vision[MAP_HEIGHT][MAP_WIDTH];
 
 public:
-	int tick(Floor& f, std::vector<Entity*>& e);
+	int tick(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c, bool debug);	// debugging
+	void tick(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c);	// release
 	void clearVision();
 	void resetPlayer();
 
-	Player(std::vector<Entity*>& e);
+	Player(std::vector<Entity*>& e, std::vector<Creature*>& c);
 };

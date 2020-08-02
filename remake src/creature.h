@@ -5,11 +5,7 @@
 class Creature : public Entity	// Every living thing, player, enemies, NPCs are creatures
 {
 protected:
-	short xVel;
-	short yVel;
-
 	std::vector<Item> equipment;
-	std::string name;
 	short health;
 	short maxHealth;
 	short attack;
@@ -22,12 +18,20 @@ protected:
 
 protected:
 	void updateDirection();
-	void move(Floor f, std::vector<Entity*> e);
+	void fight(Creature* c);
+	void move(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c);
 	bool checkForTileCollision(Floor& f);
-	bool checkForCreatureCollision(std::vector<Entity*>& e);
+	int checkForCreatureCollision(std::vector<Creature*>& c);
 
 public:
+	void virtual tick(Floor& f, std::vector<Entity*>& e, std::vector<Creature*>& c);
+
 	short getSight() const;
+	short getHealth() const;
+	short getMaxHealth() const;
+	short getAttack() const;;
+	short getDefense() const;
+	short getDirection() const;
 
 public:
 	Creature();

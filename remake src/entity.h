@@ -14,6 +14,12 @@ public:
 	bool item;
 	char sprite;
 
+	short xVel;
+	short yVel;
+
+protected:
+	std::string name;
+
 public:
-	void virtual tick();
+	std::string getName() const;
 };

@@ -12,8 +12,9 @@ private:
 	Floor floor;
 
 	std::vector<Entity*> entities;
+	std::vector<Creature*> creatures;
 
-	Player player { entities };
+	Player player { entities, creatures };
 
 private:
 	void tick();

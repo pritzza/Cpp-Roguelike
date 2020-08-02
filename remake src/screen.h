@@ -14,6 +14,7 @@ class Screen
 private:
 
 public:
+	void printStats(const Player& p);
 	void update(const Player& p, const Floor& f, const std::vector<Entity*>& e);
 	void draw(const char s[MAP_HEIGHT][MAP_WIDTH]);
 
