@@ -3,12 +3,10 @@
 
 Creature::Creature()
 {
-	name = "Mambo";
 }
 
-void Creature::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r)
+void Creature::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r, std::vector<Event*>& ev)
 {
-
 }
 
 short Creature::getHealth() const
@@ -35,40 +33,122 @@ short Creature::getSight() const
 {
 	return sight;
 }
+short Creature::getLevel() const
+{
+	return level;
+}
+short Creature::getExperience() const
+{
+	return experience;
+}
+short Creature::getMaxExp() const
+{
+	return maxExp;
+}
 
-void Creature::move(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const Room& r)
+void Creature::move(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const Room& r, std::vector<Event*>& ev)
 {
 	updateDirection();
 
-	int mobNum = checkForCreatureCollision(c);
+	// mobNum is the foe creature being collided with
+	int mobNum = checkForCreatureCollision(c); // return -1 if no enemies collide
 
 	// include item collusion and special tile collsiion of sorts here
 	if (mobNum != -1)
 	{
-		fight(c[mobNum]);
+		fight(c[mobNum], ev);
 	}
 	else if (checkForTileCollision(m, r) == false)
 	{
 		x += xVel;
 		y += yVel;
 	}
+
 	xVel = 0;
 	yVel = 0;
+
+	if (health <= 0)
+		die(e, c, ev, mobNum);
 }
 
-void Creature::fight(Creature* c)
+void Creature::fight(Creature* opponent, std::vector<Event*>& ev)
 {
-	int damage = c->defense - attack;
+	short damage = this->attack - opponent->defense;
+
+	if (this->creatureVectorElement == 0)	// If you're the player, and you attempt to attack an enemy
+		opponent->attackedByPlayer = true;
 
 	if (damage <= 0)
 	{
-		std::cout << std::endl << c->getName() << " attacked and missed " << getName() << '!';	//miss
+		Event* miss = new Event{ ev, 1, 0, opponent->getName(), this->getName() };	// miss
 	}
 	else
 	{
-		c->health -= damage;
-		std::cout << std::endl << c->getName() << " attacked " << getName() << " for " << damage << " damage!";	//attack
+		opponent->health -= damage;
+		Event* miss = new Event{ ev, 2, damage, opponent->getName(), this->getName() };	// successful attack
 	}
+}
+
+void Creature::levelUp(std::vector<Event*>& ev) 
+{
+	experience %= maxExp;
+	maxExp *= 1.5;
+
+	health++;
+	maxHealth++;
+	attack++;
+	defense++;
+
+	level++;
+
+	Event* levelUp = new Event{ ev, 4, level, "", this->getName() };
+}
+
+void Creature::gainExperience(Creature* o, std::vector<Event*>& ev)
+{
+	short expGained = ((o->maxHealth + o->attack + o->defense) * level / 10) + 1;
+
+	experience += expGained;
+
+	Event* gainExp = new Event{ ev, 3, expGained, "", this->getName() };
+
+	if (experience >= maxExp)
+		levelUp(ev);
+}
+
+// Dies to player
+void Creature::die(std::vector<Entity*>& e, std::vector<Creature*>& c, std::vector<Event*>& ev, int mobNum)
+{
+	Event* die = new Event{ ev, 0, 0, this->getName(), "" };
+
+	if (attackedByPlayer)	// If this creature was attacked by the player, give the player exp
+	{
+		c[0]->gainExperience(this, ev);
+	}
+
+	if (entityVectorElement != 0 || creatureVectorElement != 0)	// dont delete the player from the vectorsw
+	{
+		Entity* goldDrop = new Entity{ e, x, y, true, 3, this->gold };
+
+		deleteFromVectors(e, c);
+	}
+}
+
+void Creature::deleteFromVectors(std::vector<Entity*>& e, std::vector<Creature*>& c)
+{
+	e.erase(e.begin() + entityVectorElement);
+	c.erase(c.begin() + creatureVectorElement);
+
+	for (int i = entityVectorElement; i < e.size(); i++)
+		e[i]->entityVectorElement--;
+
+	for (int i = creatureVectorElement; i < c.size(); i++)
+		c[i]->creatureVectorElement--;
+
+	delete this;
+
+	e.shrink_to_fit();
+	c.shrink_to_fit();
 }
 
 void Creature::updateDirection()

@@ -1,16 +1,20 @@
 #include "enemy.h"
 
-Enemy::Enemy(std::vector<Entity*>& e, std::vector<Creature*>& c, int xp, int yp, int i)
+Enemy::Enemy(std::vector<Entity*>& e, std::vector<Creature*>& c, int xp, int yp, int i, short fl)
 {
 	sprite = 'e';
 	x = xp;
 	y = yp;
-	id = i;
+	idValue = i;
+	entityType = 0;
 
-	setEnemy();
+	setEnemy(fl);
 
 	e.push_back(this);
+	entityVectorElement = e.size() - 1;
+
 	c.push_back(this);
+	creatureVectorElement = c.size() - 1;
 }
 
 Enemy::~Enemy()
@@ -18,12 +22,22 @@ Enemy::~Enemy()
 	delete this;
 }
 
-void Enemy::setEnemy()
+void Enemy::setEnemy(short fl)
 {
-	switch (id)
+	switch (idValue)
 	{
-	case (0):
+	case (1):	// idValue 0 is the player
 		name = "Rat";
+		ai = 0;
+		isHostile = true;
+		willAttackSame = false;
+
+		health = 2;
+		maxHealth = health;
+		attack = 1;
+		defense = 0;
+
+		sprite = 'r';
 
 		break;
 	}
@@ -39,10 +53,10 @@ void Enemy::calculateNextMove(std::vector<Entity*>& e) // will need to take in p
 		// pick move in random direction or stand still (1/5 all)
 		move = rand() % 5;
 
-		if (move == 0)		 { yVel = -1; }
-		else if (move == 1)	 { yVel = 1; }
-		else if (move == 2)	 { xVel = 1; }
-		else if (move == 3)  { xVel = -1; }
+		if (move == 0) { yVel = -1; }
+		else if (move == 1) { yVel = 1; }
+		else if (move == 2) { xVel = 1; }
+		else if (move == 3) { xVel = -1; }
 
 		break;
 
@@ -51,8 +65,8 @@ void Enemy::calculateNextMove(std::vector<Entity*>& e) // will need to take in p
 	}
 }
 
-void Enemy::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r)
+void Enemy::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r, std::vector<Event*>& ev)
 {
 	calculateNextMove(e);
-	move(e, c, m, r[0]);
+	move(e, c, m, r[0], ev);
 }

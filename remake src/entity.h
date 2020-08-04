@@ -10,16 +10,22 @@ class Entity	// The player, all enemies, and items, like equipment and warp tile
 public:
 	short x;
 	short y;
-	short id;
-	bool item;
-	char sprite;
-
 	short xVel;
 	short yVel;
+	char sprite;
+
+	int entityType; //creature, tile, item
+	int idValue; // enemy id value, tile value, 
+	bool isItem;
+
+	short entityVectorElement;
 
 protected:
 	std::string name;
 
 public:
 	std::string getName() const;
+	Entity(std::vector<Entity*>& e, short xp, short yp, bool it, short i, short v);
+	Entity();
+	~Entity();
 };

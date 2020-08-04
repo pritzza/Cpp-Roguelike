@@ -12,10 +12,15 @@ void gotoxy(int x, int y);
 class Screen
 {
 private:
+	short numPrevEvents;
 
 public:
+	std::vector<Event*> events;
+
+public:
+	void printEvents(std::vector<Event*>& ev);
 	void printStats(const Player& p);
-	void update(const Player& p, const Floor& f, const std::vector<Entity*>& e);
+	void update(const Player& p, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Entity*>& e, std::vector<Event*>& ev);
 	void draw(const char s[MAP_HEIGHT][MAP_WIDTH]);
 
 	Screen();

@@ -4,16 +4,23 @@ Player::Player(std::vector<Entity*>& e, std::vector<Creature*>& c)
 {
 	name = "You";
 	sprite = '&';
-	id = 0;
+	entityType = 0;
+	idValue = 0;
 
 	e.push_back(this);
+	entityVectorElement = e.size() - 1;
+	
 	c.push_back(this);
+	creatureVectorElement = c.size() - 1;
 }
 
 void Player::resetPlayer()
 {
 	clearVision();
-	//hp = 10
+	health = 10;
+	maxHealth = health;
+	attack = 2;
+	defense = 0;
 	//etc
 }
 
@@ -99,20 +106,20 @@ void Player::updateVision(const std::vector<Room>& f, const char m[MAP_HEIGHT][M
 		}
 }
 
-int Player::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r, bool debug)
+int Player::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r, std::vector<Event*>& ev, bool debug)
 {
 	// returns input inorder to change gamestates in game obj
 	int input = getInput();
-	move(e, c, m , r[0]);
+	move(e, c, m , r[0], ev);
 	updateVision(r, m);
 
 	return input;
 }
 
-void Player::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r)
+void Player::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r, std::vector<Event*>& ev)
 {
 	// returns input inorder to change gamestates in game obj
 	getInput();
-	move(e, c, m, r[0]);
+	move(e, c, m, r[0], ev);
 	updateVision(r, m);
 }

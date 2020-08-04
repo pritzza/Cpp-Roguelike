@@ -18,7 +18,7 @@ private:
 	void spawnRoomContents(std::vector<Entity*>& e, std::vector<Creature*>& c);
 	
 public:
-	short level;
+	short floorLevel;
 
 	char map[MAP_HEIGHT][MAP_WIDTH];
 	short numRooms;

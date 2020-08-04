@@ -62,11 +62,12 @@ void Floor::spawnRoomContents(std::vector<Entity*>& e, std::vector<Creature*>& c
 		// Spawns enemies
 		for (int i = 0; i < enemiesInRoom; i++)
 		{
-
 			int xp = rand() % (r.width - 2) + r.x + 1;
 			int yp = rand() % (r.height - 2) + r.y + 1;
 
-			Enemy* enemy = new Enemy(e, c, xp, yp, 0);
+			int creatureId = 1; // 0 is player, 1 is rat
+
+			Enemy* enemy = new Enemy(e, c, xp, yp, 1, floorLevel);
 		}
 	}
 }
