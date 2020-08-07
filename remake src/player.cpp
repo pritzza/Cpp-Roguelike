@@ -31,28 +31,24 @@ void Player::clearVision()
 			vision[j][i] = ' ';
 }
 
-int Player::getInput()
+void Player::resetVision(const std::vector<Room>& f, const char m[MAP_HEIGHT][MAP_WIDTH])
 {
-	char input;
-	input = _getch();
+	for (int i = 0; i < MAP_WIDTH; i++)
+		for (int j = 0; j < MAP_HEIGHT; j++)
+			vision[j][i] = ' ';
 
-	switch (input)
+	updateVision(f, m);
+}
+
+void Player::processInput(const char i)
+{
+	switch (i)
 	{
 	case('w'): yVel = -1; break;
 	case('s'): yVel = 1; break;
 	case('a'): xVel = -1; break;
 	case('d'): xVel = 1; break;
-
-	case('r'): return 1; break;	// debug hotkey for floor reset; higher up return value 1 calls progressFloor()
-	case(' '):
-		if (sight == 1)
-			sight = -1;
-		else
-			sight = 1;
-		break;
 	}
-
-	return 0;
 }
 
 void Player::updateVision(const std::vector<Room>& f, const char m[MAP_HEIGHT][MAP_WIDTH])
@@ -106,20 +102,10 @@ void Player::updateVision(const std::vector<Room>& f, const char m[MAP_HEIGHT][M
 		}
 }
 
-int Player::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r, std::vector<Event*>& ev, bool debug)
+void Player::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r, std::vector<Event*>& ev, const char input)
 {
 	// returns input inorder to change gamestates in game obj
-	int input = getInput();
-	move(e, c, m , r[0], ev);
-	updateVision(r, m);
-
-	return input;
-}
-
-void Player::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r, std::vector<Event*>& ev)
-{
-	// returns input inorder to change gamestates in game obj
-	getInput();
+	processInput(input);
 	move(e, c, m, r[0], ev);
 	updateVision(r, m);
 }

@@ -1,6 +1,6 @@
 #include "enemy.h"
 
-Enemy::Enemy(std::vector<Entity*>& e, std::vector<Creature*>& c, int xp, int yp, int i, short fl)
+Enemy::Enemy(std::vector<Entity*>& e, std::vector<Creature*>& c, const int xp, const int yp, const short i, const short fl)
 {
 	sprite = 'e';
 	x = xp;
@@ -22,7 +22,7 @@ Enemy::~Enemy()
 	delete this;
 }
 
-void Enemy::setEnemy(short fl)
+void Enemy::setEnemy(const short fl)
 {
 	switch (idValue)
 	{

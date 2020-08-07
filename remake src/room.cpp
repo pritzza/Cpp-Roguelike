@@ -14,7 +14,6 @@ Room::Room(std::vector<Room> rooms, int num)
 	id = num;
 
 	//generateRoomContents();
-
 }
 
 void Room::generateRoomShape()

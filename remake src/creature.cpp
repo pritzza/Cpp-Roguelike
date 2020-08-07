@@ -1,53 +1,23 @@
 
 #include "creature.h"
 
-Creature::Creature()
-{
-}
+Creature::Creature() {}
 
-void Creature::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r, std::vector<Event*>& ev)
-{
-}
+void Creature::tick(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const std::vector<Room>& r, std::vector<Event*>& ev) {}
 
-short Creature::getHealth() const
-{
-	return health;
-}
-short Creature::getMaxHealth() const
-{
-	return maxHealth;
-}
-short Creature::getAttack() const
-{
-	return attack;
-}
-short Creature::getDefense() const
-{
-	return defense;
-}
-short Creature::getDirection() const
-{
-	return direction;
-}
-short Creature::getSight() const
-{
-	return sight;
-}
-short Creature::getLevel() const
-{
-	return level;
-}
-short Creature::getExperience() const
-{
-	return experience;
-}
-short Creature::getMaxExp() const
-{
-	return maxExp;
-}
+short Creature::getHealth() const { return health; }
+short Creature::getMaxHealth() const { return maxHealth; }
+short Creature::getAttack() const { return attack; }
+short Creature::getDefense() const { return defense; }
+short Creature::getDirection() const { return direction; }
+short Creature::getSight() const { return sight; }
+short Creature::getLevel() const { return level; }
+short Creature::getExperience() const { return experience; }
+short Creature::getMaxExp() const { return maxExp; }
 
 void Creature::move(std::vector<Entity*>& e, std::vector<Creature*>& c, const char m[MAP_HEIGHT][MAP_WIDTH], const Room& r, std::vector<Event*>& ev)
 {
+	// Changes direction based on x and y vel
 	updateDirection();
 
 	// mobNum is the foe creature being collided with
@@ -56,7 +26,7 @@ void Creature::move(std::vector<Entity*>& e, std::vector<Creature*>& c, const ch
 	// include item collusion and special tile collsiion of sorts here
 	if (mobNum != -1)
 	{
-		fight(c[mobNum], ev);
+		fight(c[mobNum], ev);	// This creature attacks c[mobNum] and reports it to the event vector if enemy collision
 	}
 	else if (checkForTileCollision(m, r) == false)
 	{
@@ -76,7 +46,7 @@ void Creature::fight(Creature* opponent, std::vector<Event*>& ev)
 	short damage = this->attack - opponent->defense;
 
 	if (this->creatureVectorElement == 0)	// If you're the player, and you attempt to attack an enemy
-		opponent->attackedByPlayer = true;
+		opponent->attackedByPlayer = true;	// tag the enemy to say that you've attacked it
 
 	if (damage <= 0)
 	{
@@ -89,7 +59,8 @@ void Creature::fight(Creature* opponent, std::vector<Event*>& ev)
 	}
 }
 
-void Creature::levelUp(std::vector<Event*>& ev) 
+// If a creatures exp exceeds its maxExp threshold
+void Creature::levelUp(std::vector<Event*>& ev)
 {
 	experience %= maxExp;
 	maxExp *= 1.5;
@@ -104,7 +75,7 @@ void Creature::levelUp(std::vector<Event*>& ev)
 	Event* levelUp = new Event{ ev, 4, level, "", this->getName() };
 }
 
-void Creature::gainExperience(Creature* o, std::vector<Event*>& ev)
+void Creature::gainExperience(const Creature* o, std::vector<Event*>& ev)
 {
 	short expGained = ((o->maxHealth + o->attack + o->defense) * level / 10) + 1;
 
@@ -154,7 +125,7 @@ void Creature::deleteFromVectors(std::vector<Entity*>& e, std::vector<Creature*>
 void Creature::updateDirection()
 {
 	if (xVel || yVel)	// if your velocity isnt 0, change direction
-	{	
+	{
 		if (yVel < 0)
 			direction = 0; 	// North
 		else if (yVel > 0)
@@ -177,14 +148,15 @@ bool Creature::checkForTileCollision(const char m[MAP_HEIGHT][MAP_WIDTH], const 
 	return false;
 }
 
-int Creature::checkForCreatureCollision(std::vector<Creature*>& c)
+int Creature::checkForCreatureCollision(const std::vector<Creature*>& c)
 {
 	//iterate through entities to see if anthing collides
 	//	if they do, attack/interact depending on hostility
-	for (int i = 0; i < c.size(); i++)
+	for (auto& i : c)
 	{
-		if ((c[i]->x + c[i]->xVel == this->x + this->xVel && c[i]->y + c[i]->yVel == this->y + this->yVel) && this != c[i])
-			return i;	// returns element number of enemy attacking
+		if (this != i)	// cant attack yourself
+			if (i->x + i->xVel == this->x + this->xVel && i->y + i->yVel == this->y + this->yVel)
+				return i->creatureVectorElement;	// returns element number of enemy attacking
 	}
 
 	return -1;	// returns -1 if no element is attacking

@@ -4,17 +4,12 @@ Floor::Floor()
 {
 }
 
-std::vector<Room>& Floor::getRooms()
-{
-	return rooms;
-}
+std::vector<Room>& Floor::getRooms() { return rooms; }
 
-Room& Floor::getRoom(int id)
-{
-	return rooms[id];
-}
+Room& Floor::getRoom(const int id) { return rooms[id]; }
 
-void Floor::fillFloor(char c)
+// Fills the map[][] of the floor with a char to overwrite/erase the information on the previous floor
+void Floor::fillFloor(const char c)
 {
 	for (int y = 0; y < MAP_HEIGHT; y++)
 		for (int x = 0; x < MAP_WIDTH; x++)
@@ -23,22 +18,22 @@ void Floor::fillFloor(char c)
 
 void Floor::createFloor(std::vector<Entity*>& e, std::vector<Creature*>& c)
 {
-	fillFloor(' ');
-	rooms.clear();
+	fillFloor(' ');	// resets map[][]
+	rooms.clear();	// removes all rooms from vector
 	numRooms = 0;
 
 	short roomsInFloor = rand() % (maxRoomsPerFloor - minRoomsPerFloor + 1) + minRoomsPerFloor;
+
 	for (int i = 0; i < roomsInFloor; i++)
 		addRoom();
+
+	pathRooms();
+	spawnRoomContents(e, c);
 
 	// garbage debug for how many rooms tried and actual room count
 	//for (int i = 0; i < MAP_HEIGHT + 1; i++)
 	//	std::cout << std::endl;
 	//std::cout << numRooms << roomsInFloor;
-
-	pathRooms();
-
-	spawnRoomContents(e, c);
 }
 
 void Floor::spawnRoomContents(std::vector<Entity*>& e, std::vector<Creature*>& c)
@@ -57,7 +52,6 @@ void Floor::spawnRoomContents(std::vector<Entity*>& e, std::vector<Creature*>& c
 
 		if (isSwarm == chanceOfSwarm)
 			enemiesInRoom *= swarmFactor;
-		//
 
 		// Spawns enemies
 		for (int i = 0; i < enemiesInRoom; i++)
@@ -65,9 +59,12 @@ void Floor::spawnRoomContents(std::vector<Entity*>& e, std::vector<Creature*>& c
 			int xp = rand() % (r.width - 2) + r.x + 1;
 			int yp = rand() % (r.height - 2) + r.y + 1;
 
+			// Generate x and y coords for new entities so that they dont overlap with existing ones
+
 			int creatureId = 1; // 0 is player, 1 is rat
 
 			Enemy* enemy = new Enemy(e, c, xp, yp, 1, floorLevel);
+
 		}
 	}
 }
@@ -81,13 +78,14 @@ void Floor::pathRooms()
 		Room& r1 = rooms[i];		// the room we're starting the path
 		Room& r2 = rooms[i + 1];	// the destination room of the path
 
+		// Get the center tile of both rooms
 		cxr1 = r1.x + r1.width / 2;
 		cyr1 = r1.y + r1.height / 2;
 
 		cxr2 = r2.x + r2.width / 2;
 		cyr2 = r2.y + r2.height / 2;
 
-		int path = cxr1;	// sets the path to the x center of r1
+		int path = cxr1;	// sets the path to the x center of r1, where we start
 
 		// Go through and draw the horizontal part of the path first
 		if (cxr1 <= cxr2)
@@ -109,14 +107,16 @@ void Floor::pathRooms()
 	}
 }
 
-void Floor::drawPath(char d, int x, int y)
+// Actually writes the chars to the map[][] depending on the x/y of the path
+void Floor::drawPath(const char d, const int x, const int y)
 {
-	// Actually draws the tiles to the map depending on the x/y of the path
+	const Room& const r = rooms[0];
 
-	if (map[y][x] == rooms[0].wallTile)
-		map[y][x] = rooms[0].doorTile;
+	// somehow make to switch statement
+	if (map[y][x] == r.wallTile)
+		map[y][x] = r.doorTile;
 	else if (map[y][x] == ' ')
-		map[y][x] = rooms[0].pathTile;
+		map[y][x] = r.pathTile;
 }
 
 void Floor::addRoom()
@@ -129,24 +129,27 @@ void Floor::addRoom()
 	{
 		rooms.push_back(room);	// Adds this room to the vector of rooms
 
-		int roomStartX = rooms[numRooms].x;
-		int roomEndX = roomStartX + rooms[numRooms].width;
+		// The leftmost face of the room, starting at its x
+		int leftFace = rooms[numRooms].x;
+		int rightFace = leftFace + rooms[numRooms].width;
 
-		int roomStartY = rooms[numRooms].y;
-		int roomEndY = roomStartY + rooms[numRooms].height;
+		// The leftmost face of the room, starting at its y
+		int topFace = rooms[numRooms].y;
+		int bottomFace = topFace + rooms[numRooms].height;
 
 		numRooms++;
 
-		// Creatues box around room
-		for (int x = roomStartX; x < roomEndX; x++)
-			for (int y = roomStartY; y < roomEndY; y++)
+		// Creatures rectangle of wall tiles around room
+		for (int x = leftFace; x < rightFace; x++)
+			for (int y = topFace; y < bottomFace; y++)
 				map[y][x] = room.wallTile;
 
 		// Fills box with floor tiles
-		for (int x = roomStartX + 1; x < roomEndX - 1; x++)
-			for (int y = roomStartY + 1; y < roomEndY - 1; y++)
+		for (int x = leftFace + 1; x < rightFace - 1; x++)
+			for (int y = topFace + 1; y < bottomFace - 1; y++)
 				map[y][x] = room.floorTile;
 
-		map[roomStartY][roomStartX] = static_cast<char>(room.id + 65);
+		// Debug to be able to identify rooms visually by id
+		//map[topFace][leftFace] = static_cast<char>(room.id + 'A');
 	}
 }

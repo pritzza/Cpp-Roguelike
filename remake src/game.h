@@ -7,7 +7,11 @@
 class Game
 {
 private:
+	short gameState{ 0 };
 	bool running;
+	char input;
+	bool debugMode{ true };
+
 	Screen screen;
 	Floor floor;
 
@@ -19,6 +23,7 @@ private:
 private:
 	void tick();
 	void progressFloor();
+	void handleInput();
 	void clearEntities(bool savePlayer);
 	void reset();
 

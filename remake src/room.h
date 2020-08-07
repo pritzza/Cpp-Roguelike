@@ -11,11 +11,11 @@ public:
 	short width;
 	short height;
 	short id = 0;
-	const char wallTile = '#';
-	//const char wallTile2;
-	const char floorTile = '.';
-	const char doorTile = '>';
-	const char pathTile = ':';
+	static const char wallTile = '#';
+	//static const char wallTile2;	// Multiple tiles for looks
+	static const char floorTile = '.';
+	static const char doorTile = '>';
+	static const char pathTile = ':';
 
 public:
 	void generateRoomShape();

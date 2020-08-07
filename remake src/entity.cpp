@@ -3,12 +3,12 @@
 
 Entity::Entity() {}
 
-Entity::Entity(std::vector<Entity*>& e, short xp, short yp, bool it, short i, short v)
+std::string Entity::getName() const { return name; }
+
+Entity::Entity(std::vector<Entity*>& e, const short xp, const short yp, const bool it, const short i, const short v)
 {
 	x = xp;
 	y = yp;
-	xVel = 0;
-	yVel = 0;
 	isItem = it;
 	entityType = i;
 	idValue = v;
@@ -17,9 +17,4 @@ Entity::Entity(std::vector<Entity*>& e, short xp, short yp, bool it, short i, sh
 Entity::~Entity()
 {
 	//delete this;
-}
-
-std::string Entity::getName() const
-{
-	return name;
 }

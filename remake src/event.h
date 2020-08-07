@@ -14,6 +14,6 @@ public:
 
 public:
 	void printEvents();
-	Event(std::vector<Event*>& ev, short at, short av, std::string s, std::string a);
+	Event(std::vector<Event*>& ev, const short at, const short av, const std::string s, const std::string a);
 	~Event();
 };
